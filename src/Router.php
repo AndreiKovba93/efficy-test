@@ -19,18 +19,45 @@ class Router
             self::METHOD_GET => [
                 Controller\CounterController::class,
                 'getOne'
-            ]
+            ],
         ],
         'counter' => [
             self::METHOD_GET => [
                 Controller\CounterController::class,
                 'getAll'
-            ]
+            ],
+        ],
+
+        'team' => [
+            self::METHOD_GET => [
+                Controller\TeamController::class,
+                'getAll'
+            ],
+            self::METHOD_POST => [
+                Controller\TeamController::class,
+                'create'
+            ],
+        ],
+        'team/{id}' => [
+            self::METHOD_GET => [
+                Controller\TeamController::class,
+                'getOne'
+            ],
+            self::METHOD_PUT => [
+                Controller\TeamController::class,
+                'update'
+            ],
+            self::METHOD_DELETE => [
+                Controller\TeamController::class,
+                'delete'
+            ],
         ],
     ];
 
     public function run(string $method, string $uri): void
     {
+        header('Content-Type: application/json; charset=utf-8');
+        $uri = strtok($uri, "?");
         $key = $this->prepareKey($uri);
         if (!isset($this->config[$key]) && !isset($this->config[$key][$method])) {
             $this->return404();
@@ -62,20 +89,20 @@ class Router
     private function return404(): void
     {
         header(self::ERROR_404);
-        echo 'Error 404';
+        echo json_encode(['errors' => [self::ERROR_404]]);
         exit;
     }
 
     private function returnBadConfig(): void
     {
-        $this->return500('Bad config');
+        $this->return500(self::ERROR_500);
         exit;
     }
 
     private function return500(string $error): void
     {
         header(self::ERROR_500);
-        echo $error;
+        echo json_encode(['errors' => [$error]]);
         exit;
     }
 
