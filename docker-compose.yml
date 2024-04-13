@@ -13,3 +13,9 @@ services:
        - 9000
      volumes:
        - ./src/:/var/www/html/
+
+   memcached:
+     container_name: testMemcached
+     image: memcached:latest
+     ports:
+       - "11211:11211"
