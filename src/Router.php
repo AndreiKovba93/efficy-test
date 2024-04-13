@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Controller;
+use App\Exception\ExceptionBadRequest;
 
 class Router
 {
@@ -11,6 +12,7 @@ class Router
     private const METHOD_PUT = 'PUT';
     private const METHOD_DELETE = 'DELETE';
 
+    private const ERROR_400 = 'HTTP/1.0 400 Bad Request';
     private const ERROR_404 = 'HTTP/1.0 404 Not Found';
     private const ERROR_500 = 'HTTP/1.0 500 Internal Server Error';
 
@@ -81,6 +83,8 @@ class Router
         $parameters = $this->getUriParameters($key, $uri);
         try {
             $controller->$controllerMethod(...$parameters);
+        } catch(ExceptionBadRequest $e) {
+            $this->return400($e->getMessage());
         } catch (\Throwable $e) {
             $this->return500($e->getMessage());
         }
@@ -96,6 +100,13 @@ class Router
     private function returnBadConfig(): void
     {
         $this->return500(self::ERROR_500);
+        exit;
+    }
+
+    private function return400(string $error): void
+    {
+        header(self::ERROR_400);
+        echo json_encode(['errors' => [$error]]);
         exit;
     }
 

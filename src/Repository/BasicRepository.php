@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\BaseEntity;
+use App\Exception\ExceptionBadRequest;
 use Memcached;
 
 abstract class BasicRepository
@@ -37,7 +38,9 @@ abstract class BasicRepository
     {
         $entitiesData = $this->getAllAsData();
         if (!isset($entitiesData[$id])) {
-            throw new \Exception(get_class($this) . ' with id ' . $id . ' not found');
+            $exception = new ExceptionBadRequest();
+            $exception->setEntityNotFoundMessage($id);
+            throw $exception;
         }
 
         $className = $this->getKey();
@@ -61,7 +64,9 @@ abstract class BasicRepository
     {
         $entitiesData = $this->getAllAsData();
         if (!isset($entitiesData[$id])) {
-            throw new \Exception(get_class($this) . ' with id ' . $id . ' not found');
+            $exception = new ExceptionBadRequest();
+            $exception->setEntityNotFoundMessage($id);
+            throw $exception;
         }
 
         $entity->id = $id;
@@ -75,7 +80,9 @@ abstract class BasicRepository
     {
         $entitiesData = $this->getAllAsData();
         if (!isset($entitiesData[$id])) {
-            throw new \Exception(get_class($this) . ' with id ' . $id . ' not found');
+            $exception = new ExceptionBadRequest();
+            $exception->setEntityNotFoundMessage($id);
+            throw $exception;
         }
 
         unset($entitiesData[$id]);
