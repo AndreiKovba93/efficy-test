@@ -43,6 +43,12 @@ class Router
                 'create'
             ],
         ],
+        'counter/by-team/{id}' => [
+            self::METHOD_GET => [
+                Controller\CounterController::class,
+                'getByTeam'
+            ],
+        ],
 
         'team' => [
             self::METHOD_GET => [

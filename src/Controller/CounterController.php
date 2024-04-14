@@ -26,6 +26,18 @@ class CounterController extends BasicController
         $this->success($counter->toArray());
     }
 
+    public function getByTeam(int $id): void
+    {
+        $teamRepository = new TeamRepository();
+        $team = $teamRepository->getOne($id);
+        if (is_null($team)) {
+            $this->entityNotFound($id);
+        }
+        $counterRepository = new CounterRepository();
+        $counters = $counterRepository->getByTeam($team);
+        $this->success($this->entitiesToArray($counters));
+    }
+
     public function create(): void
     {
         $data = json_decode(

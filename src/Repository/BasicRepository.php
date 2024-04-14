@@ -84,7 +84,7 @@ abstract class BasicRepository
         return true;
     }
 
-    private function getAllAsData(): array
+    protected function getAllAsData(): array
     {
         $entitiesData = json_decode(
             $this->memcached->get($this->getKey()),

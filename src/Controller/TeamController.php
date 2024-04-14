@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Team;
+use App\Repository\CounterRepository;
 use App\Repository\TeamRepository;
 
 class TeamController extends BasicController
@@ -11,7 +12,15 @@ class TeamController extends BasicController
     public function getAll(): void
     {
         $teamRepository = new TeamRepository();
-        $this->success($this->entitiesToArray($teamRepository->getAll()));
+        $teams = $teamRepository->getAll();
+        $counterRepository = new CounterRepository();
+        $response = [];
+        foreach ($teams as $team) {
+            $teamData = $team->toArray();
+            $teamData['totalSteps'] = $counterRepository->getTotalsSteps($team);
+            $response[] = $teamData;
+        }
+        $this->success($response);
     }
 
     public function getOne(int $id): void
@@ -21,7 +30,10 @@ class TeamController extends BasicController
         if (is_null($team)) {
             $this->entityNotFound($id);
         }
-        $this->success($team->toArray());
+        $counterRepository = new CounterRepository();
+        $response = $team->toArray();
+        $response['totalSteps'] = $counterRepository->getTotalsSteps($team);
+        $this->success($response);
     }
 
 
