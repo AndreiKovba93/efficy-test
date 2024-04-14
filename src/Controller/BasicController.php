@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Exception\ExceptionBadRequest;
+
 abstract class BasicController
 {
     protected function entitiesToArray(array $entities): array
@@ -18,5 +20,12 @@ abstract class BasicController
     {
         echo json_encode(['success' => $data]);
         exit;
+    }
+
+    protected function entityNotFound(mixed $id): void
+    {
+        $exception = new ExceptionBadRequest();
+        $exception->setEntityNotFoundMessage($id);
+        throw $exception;
     }
 }

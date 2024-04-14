@@ -17,16 +17,30 @@ class Router
     private const ERROR_500 = 'HTTP/1.0 500 Internal Server Error';
 
     private $config = [
+        'counter/{id}/increment' => [
+            self::METHOD_PUT => [
+                Controller\CounterController::class,
+                'increment'
+            ],
+        ],
         'counter/{id}' => [
             self::METHOD_GET => [
                 Controller\CounterController::class,
                 'getOne'
+            ],
+            self::METHOD_DELETE => [
+                Controller\CounterController::class,
+                'delete'
             ],
         ],
         'counter' => [
             self::METHOD_GET => [
                 Controller\CounterController::class,
                 'getAll'
+            ],
+            self::METHOD_POST => [
+                Controller\CounterController::class,
+                'create'
             ],
         ],
 
@@ -61,7 +75,7 @@ class Router
         header('Content-Type: application/json; charset=utf-8');
         $uri = strtok($uri, "?");
         $key = $this->prepareKey($uri);
-        if (!isset($this->config[$key]) && !isset($this->config[$key][$method])) {
+        if (!isset($this->config[$key]) || !isset($this->config[$key][$method])) {
             $this->return404();
         }
 

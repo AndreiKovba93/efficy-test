@@ -9,7 +9,7 @@ class ExceptionBadRequest extends \Exception
         $this->setMessage('Entity with id ' . $id . ' not found');
     }
 
-    private function setMessage(string $message): void
+    public function setMessage(string $message): void
     {
         $this->message = $message;
     }

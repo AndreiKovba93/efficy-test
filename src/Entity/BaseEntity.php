@@ -38,7 +38,7 @@ abstract class BaseEntity
         return $data;
     }
 
-    public function fromArray($data): self
+    public function fromArray(array $data): self
     {
         foreach ($data as $key => $value) {
             if (property_exists($this, $key)) {

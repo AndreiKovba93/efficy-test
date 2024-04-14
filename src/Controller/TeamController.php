@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Team;
-use App\Exception\ExceptionBadRequest;
 use App\Repository\TeamRepository;
 
 class TeamController extends BasicController
@@ -20,9 +19,7 @@ class TeamController extends BasicController
         $teamRepository = new TeamRepository();
         $team = $teamRepository->getOne($id);
         if (is_null($team)) {
-            $exception = new ExceptionBadRequest();
-            $exception->setEntityNotFoundMessage($id);
-            throw $exception;
+            $this->entityNotFound($id);
         }
         $this->success($team->toArray());
     }
@@ -47,15 +44,14 @@ class TeamController extends BasicController
             file_get_contents('php://input'),
             true
         );
-        $team = new Team();
-        $team = $team->fromArray($data);
         $teamRepository = new TeamRepository();
-        $team = $teamRepository->update($id, $team);
+        $team = $teamRepository->getOne($id);
         if (is_null($team)) {
-            $exception = new ExceptionBadRequest();
-            $exception->setEntityNotFoundMessage($id);
-            throw $exception;
+            $this->entityNotFound($id);
         }
+        $team = $team->fromArray($data);
+        $team = $teamRepository->update($id, $team);
+
         $this->success($team->toArray());
     }
 
@@ -64,9 +60,7 @@ class TeamController extends BasicController
         $teamRepository = new TeamRepository();
         $success = $teamRepository->delete($id);
         if ($success === false) {
-            $exception = new ExceptionBadRequest();
-            $exception->setEntityNotFoundMessage($id);
-            throw $exception;
+            $this->entityNotFound($id);
         }
         $this->success($success);
     }
